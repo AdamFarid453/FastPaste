@@ -26,6 +26,8 @@ chrome.contextMenus.onClicked.addListener(function(copiedData){
 	if(copiedData.menuItemId == "Parent" && copiedData.selectionText){
 		fullString = [fullString,copiedData.selectionText].join(' ');
 		chrome.contextMenus.update("child", {visible : true});
+		//TO DO: 
+		//access windows clipboard and append string to clipboard
 		console.log(fullString);
 	}
 
@@ -36,6 +38,10 @@ chrome.contextMenus.onClicked.addListener(function(copiedData){
 //code not complete
 chrome.contextMenus.onClicked.addListener(function(pasteData){
 	if(pasteData.menuItemId =="child" && fullString.length > 0){
+		//TO DO: 
+		//probably won't be necessary if we gain access to windows clipboard
+		//if we can't get access then we can communicate with content script 
+		//to paste message on screen
 		console.log("button working");
 	}
 });
