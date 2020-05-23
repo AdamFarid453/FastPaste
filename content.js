@@ -5,11 +5,20 @@ var addClipboard = {
 	"contexts": ["selection"] 
 };
 
+var clearClipboard = {
+	"id": "child",
+	"title": "Clear the Clipboard",
+	"contexts": ["page"],
+	visible: false
+};
+
 //String used to append the selected text to console
 var fullString =  "";
 
-//initialize one button in the context menu
+//initialize two buttons in the context menu
 chrome.contextMenus.create(addClipboard);
+chrome.contextMenus.create(clearClipboard);
+
 
 function copyTextToClipboard(text){
 	var copyFrom = document.createElement("textarea");
@@ -25,12 +34,26 @@ function copyTextToClipboard(text){
 	} finally {
 		document.body.removeChild(copyFrom);
 	}
-}
+};
 
-//Function waits for user to click button and updates the string as well as makes the paste clipboard button visible
+//Function waits for user to click button and updates the string as well as makes the clear clipboard button visible
 chrome.contextMenus.onClicked.addListener(function(copiedData){
-	if (copiedData.selectionText){
-		fullString += copiedData.selectionText;
+	//checks if user interacted with Parent button and appends to clipboard
+	if(copiedData.menuItemId == "Parent" && copiedData.selectionText){
+		fullString = [fullString,copiedData.selectionText].join(' ');
 		copyTextToClipboard(fullString);
+		chrome.contextMenus.update("child", {visible : true});
+	}
+});
+
+
+
+
+//function works regardless if user interacts with it or not
+chrome.contextMenus.onClicked.addListener(function(clearData){
+	//clears full string but should clear the windows clipboard as well
+	if(clearData.menuItemId == "child" && fullString.length > 0 ){
+		fullString= "";
+		chrome.contextMenus.update("child", {visible : false});
 	}
 });
